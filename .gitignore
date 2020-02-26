@@ -1,6 +1,9 @@
 ### Custom
-# Build
+# Build files
 build/
+
+# Development files
+compile_commands.json
 
 ### C++
 # Prerequisites

@@ -5,13 +5,12 @@ cmake_minimum_required(VERSION 3.11.0 FATAL_ERROR)
 project(
   Cieo
   VERSION 0.0.0
-  LANGUAGES CXX)
+  LANGUAGES CXX C)
 
 # ##############################################################################
 # OPTIONS
 # ##############################################################################
 option(ENABLE_PROFILING "Enable profiling" FALSE)
-option(STATIC_ANALYSIS "Uset static analysis tools" TRUE)
 
 # ##############################################################################
 # BUILD MODE
@@ -38,28 +37,7 @@ if(ENABLE_PROFILING)
 endif()
 
 # ##############################################################################
-# STATIC ANALYSIS
-# ##############################################################################
-if(STATIC_ANALYSIS OR CMAKE_BUILD_TYPE STREQUAL "Release")
-  find_program(
-    CLANG_TIDY_EXE
-    NAMES "clang-tidy"
-    DOC "Path to clang tidy exe")
-  if(CLANG_TIDY_EXE)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-  endif()
-  find_program(CPPCHECK_EXE NAME "cppcheck" DOC "Path to cppcheck exe")
-  if(CPPCHECK_EXE)
-    set(CMAKE_CXX_CPPCHECK "${CPPCHECK_EXE}" "--force")
-  endif()
-  find_program(CPPLINT_EXE "cpplint")
-  if(CPPLINT_EXE)
-    set(CMAKE_CXX_CPPLINT "${CPPLINT_EXE}")
-  endif()
-endif()
-
-# ##############################################################################
-# Fetch Macro
+# MACRO DEFINITIONS
 # ##############################################################################
 find_package(Git REQUIRED)
 macro(clone_git REPO_NAME)
@@ -88,6 +66,15 @@ macro(load_submodule REPO_NAME)
     message(STATUS "DID not find ${MODULE_NAME")
   endif()
 endmacro()
+macro(compress_resource FILE SOURCE_DIR EXT)
+  file(GLOB FILES "${SOURCE_DIR}/*.${EXT}")
+  add_custom_command(
+    OUTPUT ${FILE}
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/compress.sh ${FILE}
+            ${SOURCE_DIR} ${EXT}
+    DEPENDS ${FILES}
+    COMMENT "Compressing ${SOURCE_DIR}/*.${EXT} for ${FILE}")
+endmacro()
 
 # ##############################################################################
 # DEPENDENCIES
@@ -106,14 +93,26 @@ write_compiler_detection_header(
   cxx_noexcept
   cxx_static_assert
   cxx_attribute_deprecated)
+load_submodule(opencv)
+load_submodule(glfw)
+load_submodule(glm)
+load_submodule(assimp)
+
+compress_resource(${CMAKE_CURRENT_SOURCE_DIR}/src/graphics/shaders.hpp
+                  ${CMAKE_CURRENT_SOURCE_DIR}/src/graphics glsl)
+
+# find_package(OpenCV REQUIRED)
+# message("OPENCV: ${OpenCV_LIBS}")
 
 # ##############################################################################
 # SOURCE
 # ##############################################################################
-set(SOURCES
-  src/main.cpp)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set(SOURCES src/main.cpp src/graphics/core.cpp src/graphics/gl_window.cpp
+            src/graphics/glad.c src/graphics/object.cpp src/graphics/shaders.hpp)
 add_executable(cieo ${SOURCES})
 set_target_properties(cieo PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES)
+target_link_libraries(cieo glfw glm opencv_core opencv_videoio assimp ${CMAKE_DL_LIBS})
 
 # ##############################################################################
 # HPC
