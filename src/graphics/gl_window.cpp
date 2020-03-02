@@ -2,5 +2,5 @@
 
 namespace graphics {
   GLFWwindow* window;
-  GLuint shader_id;
+  GLuint shader;
 } // namespace graphics

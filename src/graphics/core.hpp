@@ -1,15 +1,19 @@
-#ifndef CIEO_GRAPHICS_CORE_HPP_
-#define CIEO_GRAPHICS_CORE_HPP_
+#ifndef GRAPHICS_CORE_HPP_
+#define GRAPHICS_CORE_HPP_
 
 #include <string>
-#include <array>
+
+#include <glm/glm.hpp>
 
 namespace graphics {
-bool open(const std::string &title = "CIEO",
-          const std::array<std::size_t, 2> &size = {500, 500});
+bool open(const std::string &name, const std::size_t &w = 500,
+          const std::size_t &h = 500);
 bool close();
+
+void clear_rgb(const glm::vec3& color);
+
+bool is_open();
 bool update();
-bool should_close();
 } // namespace graphics
 
-#endif // CIEO_GRAPHICS_CORE_HPP_
+#endif // GRAPHICS_CORE_HPP_

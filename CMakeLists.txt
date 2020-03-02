@@ -93,26 +93,31 @@ write_compiler_detection_header(
   cxx_noexcept
   cxx_static_assert
   cxx_attribute_deprecated)
-load_submodule(opencv)
 load_submodule(glfw)
 load_submodule(glm)
-load_submodule(assimp)
 
 compress_resource(${CMAKE_CURRENT_SOURCE_DIR}/src/graphics/shaders.hpp
                   ${CMAKE_CURRENT_SOURCE_DIR}/src/graphics glsl)
 
-# find_package(OpenCV REQUIRED)
-# message("OPENCV: ${OpenCV_LIBS}")
+# find_package(OpenCV REQUIRED) message("OPENCV: ${OpenCV_LIBS}")
 
 # ##############################################################################
 # SOURCE
 # ##############################################################################
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set(SOURCES src/main.cpp src/graphics/core.cpp src/graphics/gl_window.cpp
-            src/graphics/glad.c src/graphics/object.cpp src/graphics/shaders.hpp)
+set(SOURCES
+    src/main.cpp
+    src/stl.cpp
+    src/graphics/core.cpp
+    src/graphics/gl_window.cpp
+    src/graphics/glad.c
+    src/graphics/stb_image_write.cpp
+    src/graphics/shaders.hpp
+    src/graphics/shader.cpp
+    src/graphics/obj.cpp)
 add_executable(cieo ${SOURCES})
 set_target_properties(cieo PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED YES)
-target_link_libraries(cieo glfw glm opencv_core opencv_videoio assimp ${CMAKE_DL_LIBS})
+target_link_libraries(cieo glfw glm ${CMAKE_DL_LIBS})
 
 # ##############################################################################
 # HPC
