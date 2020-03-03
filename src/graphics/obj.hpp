@@ -12,16 +12,19 @@
 namespace graphics {
 struct Obj : std::enable_shared_from_this<Obj> {
 
+  Obj() : tri_count(0), color(1.0), trans(1.0) {}
+
   std::size_t tri_count;
   glm::vec3 color;
   glm::mat4 trans;
   GLuint VBO, VAO, EBO;
 
   inline void draw() const {
-    shader_set("UColor", color);
-    shader_set("UModel", trans);
+    glUseProgram(shader);
+    shader_set("uColor", color);
+    shader_set("uModel", trans);
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, tri_count, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, tri_count * 3, GL_UNSIGNED_INT, 0);
   }
 
   inline std::shared_ptr<Obj> set_color(glm::vec3 rgb) {
@@ -47,7 +50,8 @@ struct Obj : std::enable_shared_from_this<Obj> {
 };
 extern std::vector<std::shared_ptr<Obj>> objects;
 
-// std::shared_ptr<Obj> construct(const std::vector<)
+std::shared_ptr<Obj> construct(const std::vector<glm::vec3> &verts,
+                               const std::vector<glm::vec3> &norms);
 } // namespace graphics
 
 #endif // GRAPHICS_OBJ_HPP
