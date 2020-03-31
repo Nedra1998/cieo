@@ -6,6 +6,11 @@
 },
 {
   "directory": "/home/arden/programming/cieo/build",
+  "command": "/sbin/c++   -I/home/arden/programming/cieo/external/glfw/include -I/home/arden/programming/cieo/external/glm/glm/..  -Wall -g   -std=gnu++11 -o CMakeFiles/cieo.dir/src/stl.cpp.o -c /home/arden/programming/cieo/src/stl.cpp",
+  "file": "/home/arden/programming/cieo/src/stl.cpp"
+},
+{
+  "directory": "/home/arden/programming/cieo/build",
   "command": "/sbin/c++   -I/home/arden/programming/cieo/external/glfw/include -I/home/arden/programming/cieo/external/glm/glm/..  -Wall -g   -std=gnu++11 -o CMakeFiles/cieo.dir/src/graphics/core.cpp.o -c /home/arden/programming/cieo/src/graphics/core.cpp",
   "file": "/home/arden/programming/cieo/src/graphics/core.cpp"
 },
@@ -28,6 +33,11 @@
   "directory": "/home/arden/programming/cieo/build",
   "command": "/sbin/c++   -I/home/arden/programming/cieo/external/glfw/include -I/home/arden/programming/cieo/external/glm/glm/..  -Wall -g   -std=gnu++11 -o CMakeFiles/cieo.dir/src/graphics/shader.cpp.o -c /home/arden/programming/cieo/src/graphics/shader.cpp",
   "file": "/home/arden/programming/cieo/src/graphics/shader.cpp"
+},
+{
+  "directory": "/home/arden/programming/cieo/build",
+  "command": "/sbin/c++   -I/home/arden/programming/cieo/external/glfw/include -I/home/arden/programming/cieo/external/glm/glm/..  -Wall -g   -std=gnu++11 -o CMakeFiles/cieo.dir/src/graphics/obj.cpp.o -c /home/arden/programming/cieo/src/graphics/obj.cpp",
+  "file": "/home/arden/programming/cieo/src/graphics/obj.cpp"
 },
 {
   "directory": "/home/arden/programming/cieo/build/external/glfw/src",

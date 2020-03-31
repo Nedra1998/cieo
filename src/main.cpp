@@ -1,55 +1,50 @@
 #include "graphics.hpp"
 
+#include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "graphics/core.hpp"
 #include "stl.hpp"
 
-int main(int argc, char *argv[]) {
-  auto data = load_stl("../stl/Stanford_Bunny_sample.stl");
-  graphics::open("Hello");
-  // auto obj = graphics::construct(
-  //     {{-0.5, -0.5, 0.0}, {0.5, -0.5, 0.0}, {0.0, 0.5, 0.0}},
-  //     {{0.0, 0.0, -1.0}, {0.0, 0.0, -1.0}, {0.0, 0.0, -1.0}});
-  // auto obj = graphics::construct({{-1.0, -1.0, -1.0},
-  //                                 {1.0, -1.0, -1.0},
-  //                                 {1.0, 1.0, -1.0},
-  //                                 {-1.0, -1.0, -1.0},
-  //                                 {1.0, 1.0, -1.0},
-  //                                 {-1.0, 1.0, -1.0},
-  //                                 {-1.0, -1.0, -1.0},
-  //                                 {-1.0, -1.0, 1.0},
-  //                                 {1.0, -1.0, 1.0},
-  //                                 {-1.0, -1.0, -1.0},
-  //                                 {1.0, -1.0, 1.0},
-  //                                 {1.0, -1.0, -1.0}},
-  //                                {{0.0, 0.0, -1.0},
-  //                                 {0.0, 0.0, -1.0},
-  //                                 {0.0, 0.0, -1.0},
-  //                                 {0.0, 0.0, -1.0},
-  //                                 {0.0, 0.0, -1.0},
-  //                                 {0.0, 0.0, -1.0},
-  //                                 {0.0, -1.0, 0.0},
-  //                                 {0.0, -1.0, 0.0},
-  //                                 {0.0, -1.0, 0.0},
-  //                                 {0.0, -1.0, 0.0},
-  //                                 {0.0, -1.0, 0.0},
-  //                                 {0.0, -1.0, 0.0}});
+inline float frand() { return rand() / static_cast<float>(RAND_MAX); }
 
-  auto obj = graphics::construct(data[0], data[1]);
-  obj->trans = glm::rotate(glm::scale(glm::mat4(1.0f), {0.01f, 0.01f, 0.01f}),
-                           1.57075f, {-1.0f, 0.0f, 0.0f});
-  float t = 0;
+int main(int argc, char *argv[]) {
+  graphics::open("Cieo", 500, 500);
+
+  auto obj = graphics::construct("../stl/Stanford_Bunny_sample.stl");
+  obj->scale({0.01, 0.01, 0.01});
+
+  glm::vec3 pos = {0.0, 0.0, 5.0};
+  glm::vec3 up = {0.0, 1.0, 0.0};
+  graphics::set_view(pos, {0.0, 0.0, 0.0}, up);
+  graphics::set_light({10.0, 5.0, 10.0}, {1.0, 1.0, 1.0});
   while (graphics::is_open()) {
     graphics::update();
-    graphics::set_view({5 * glm::sin(t), 0.0, 5 * glm::cos(t)}, {0.0, 0.0, 0.0},
-                       {0.0, 1.0, 0.0});
-    graphics::set_light({10 * glm::sin(2 * t), 1.0, 5 * glm::cos(2 * t)},
-                        {glm::sin(2 * t) * 0.5 + 0.5, glm::sin(t) * 0.5 + 0.5,
-                         glm::sin(3 * t) * 0.5 + 0.5});
-    t += 0.01;
+
+    if (graphics::is_pressed(GLFW_KEY_RIGHT)) {
+      glm::vec3 right = glm::normalize(glm::cross(-pos, up));
+      pos += 0.1f * right;
+      graphics::set_view(pos, {0.0, 0.0, 0.0}, up);
+    } else if (graphics::is_pressed(GLFW_KEY_LEFT)) {
+      glm::vec3 right = glm::normalize(glm::cross(-pos, up));
+      pos -= 0.1f * right;
+      graphics::set_view(pos, {0.0, 0.0, 0.0}, up);
+    }
+    if (graphics::is_pressed(GLFW_KEY_UP)) {
+      pos += 0.1f * up;
+      graphics::set_view(pos, {0.0, 0.0, 0.0}, up);
+    } else if (graphics::is_pressed(GLFW_KEY_DOWN)) {
+      pos -= 0.1f * up;
+      graphics::set_view(pos, {0.0, 0.0, 0.0}, up);
+    }
+    if (graphics::is_pressed(GLFW_KEY_C)) {
+      graphics::set_light({10.0, 5.0, 10.0}, {frand(), frand(), frand()});
+    }
+    if (graphics::is_pressed(GLFW_KEY_Q)) {
+      graphics::should_close();
+    }
   }
-  // graphics::stop_recording();
   graphics::close();
   return 0;
 }
